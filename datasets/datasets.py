@@ -6,14 +6,13 @@ import os
 
 
 def _1d_transforms(waveform, sample_rate, audio_length):
-    waveform.resize_(sample_rate * audio_length)
-    return waveform
+    return waveform.resize_(sample_rate * audio_length)
 
-def _2d_transforms(waveform, sample_rate):
+def _2d_transforms(waveform, sample_rate, n_fft, hop_length):
     melspec_transform = MelSpectrogram(
         sample_rate=sample_rate,
-        n_fft=2048,
-        hop_length=512,
+        n_fft=n_fft,
+        hop_length=hop_length,
     )
     mel_spec = melspec_transform(waveform)
 
@@ -25,13 +24,15 @@ def _2d_transforms(waveform, sample_rate):
 class EMOVO(Dataset):
     """EMOVO: Italian emotional speech database
     """
-    def __init__(self, root_dir, audio_length):
+    def __init__(self, root_dir, audio_length, n_fft, hop_length):
         """
         Args:
             root_dir (string): Root directory of the dataset.
         """
         self.root_dir = root_dir
         self.audio_length = audio_length
+        self.n_fft = n_fft
+        self.hop_length = hop_length
         self.sample_rate = 48000
         self.emotions = [
             'disgusto',   # disgust
@@ -77,7 +78,9 @@ class EMOVO(Dataset):
 
         sample = {
             'audiofile': _1d_transforms(waveform, self.sample_rate, self.audio_length),
-            'logmelspectrogram': _2d_transforms(waveform, self.sample_rate),
+            'logmelspectrogram': _2d_transforms(
+                waveform, self.sample_rate,
+                self.n_fft, self.hop_length),
             'emotion': emotion_idx
         }
 
