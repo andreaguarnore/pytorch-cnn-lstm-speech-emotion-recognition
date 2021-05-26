@@ -1,24 +1,25 @@
 {
-    "name": "Mnist_LeNet",
+    "name": "SpeechEmotion1D",
     "n_gpu": 1,
 
     "arch": {
-        "type": "MnistModel",
-        "args": {}
+        "type": "Model1D",
+        "args": {
+            "emotions": 7
+        }
     },
     "data_loader": {
-        "type": "MnistDataLoader",
-        "args":{
-            "data_dir": "data/",
-            "batch_size": 128,
+        "type": "EMOVODataLoader",
+        "args": {
+            "data_dir": "data/EMOVO/",
+            "batch_size": 32,
             "shuffle": true,
-            "validation_split": 0.1,
-            "num_workers": 2
+            "validation_split": 0.2
         }
     },
     "optimizer": {
         "type": "Adam",
-        "args":{
+        "args": {
             "lr": 0.001,
             "weight_decay": 0,
             "amsgrad": true
@@ -41,10 +42,10 @@
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
-        
+
         "monitor": "min val_loss",
         "early_stop": 10,
 
-        "tensorboard": true
+        "tensorboard": false
     }
 }

@@ -2,7 +2,7 @@ import argparse
 import collections
 import torch
 import numpy as np
-import data_loader.data_loaders as module_data
+import data_loaders.data_loaders as module_data
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
