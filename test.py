@@ -1,10 +1,10 @@
 import argparse
 import torch
 from tqdm import tqdm
-import data_loader.data_loaders as module_data
-import model.loss as module_loss
-import model.metric as module_metric
-import model.model as module_arch
+import data_loaders.data_loaders as module_data
+import models.loss as module_loss
+import models.metric as module_metric
+import models.models as module_arch
 from parse_config import ConfigParser
 
 
@@ -14,11 +14,10 @@ def main(config):
     # setup data_loader instances
     data_loader = getattr(module_data, config['data_loader']['type'])(
         config['data_loader']['args']['data_dir'],
-        batch_size=512,
+        batch_size=32,
         shuffle=False,
         validation_split=0.0,
-        training=False,
-        num_workers=2
+        training=False
     )
 
     # build model architecture
@@ -50,7 +49,7 @@ def main(config):
             output = model(data)
 
             #
-            # save sample images, or do something with output here
+            # do something with output here
             #
 
             # computing loss, metrics on test set

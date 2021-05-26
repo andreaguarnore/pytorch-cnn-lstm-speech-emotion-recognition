@@ -10,7 +10,7 @@ def resample(waveform, sample_rate):
     return resampler(waveform)
 
 def transforms1d(waveform, sample_rate, audio_length):
-    return waveform.resize_(sample_rate * audio_length)
+    return torch.unsqueeze(waveform.resize_(sample_rate * audio_length), 0)
 
 def transforms2d(waveform, sample_rate, n_fft, hop_length):
     melspec_transform = MelSpectrogram(
