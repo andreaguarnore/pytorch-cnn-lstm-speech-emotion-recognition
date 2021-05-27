@@ -9,26 +9,25 @@ def resample(waveform, sample_rate):
     resampler = Resample(new_freq=sample_rate)
     return resampler(waveform)
 
-def transforms1d(waveform, sample_rate, audio_length):
-    return torch.unsqueeze(waveform.resize_(sample_rate * audio_length), 0)
-
 def transforms2d(waveform, sample_rate, n_fft, hop_length):
-    melspec_transform = MelSpectrogram(
+    # stft = Spectrogram(n_fft, hop_length=hop_length)(waveform)
+    # mel_spec = MelScale()(stft)
+    mel_spec = MelSpectrogram(
         sample_rate=sample_rate,
         n_fft=n_fft,
         hop_length=hop_length,
-    )
-    mel_spec = melspec_transform(waveform)
+    )(waveform)
+    mel_spec = torch.nan_to_num(mel_spec, 1e-5)
 
-    power_to_db_transform = AmplitudeToDB()
-    log_mel_spec = power_to_db_transform(mel_spec)
+    log_mel_spec = AmplitudeToDB()(mel_spec)
 
     return log_mel_spec
 
 class EMOVO(Dataset):
     """EMOVO: Italian emotional speech database
     """
-    def __init__(self, root_dir, raw_data=True, sample_rate=16000, audio_length=8, n_fft=2048, hop_length=512):
+    def __init__(self, root_dir, sample_rate=16000,
+        audio_length=8, n_fft=2048, hop_length=512, training=True):
         """
         Args:
             root_dir (string): Root directory of the dataset.
@@ -46,9 +45,10 @@ class EMOVO(Dataset):
                 Default: 2048
             hop_length (int, optional): Length of hop between STFT
                 windows. Default: 512
+            training (boolean, optional): True for training set, False
+                for validation set. Default: True
         """
         self.root_dir = root_dir
-        self.raw_data = raw_data
         self.sample_rate = sample_rate
         self.audio_length = audio_length
         self.n_fft = n_fft
@@ -62,10 +62,15 @@ class EMOVO(Dataset):
             'tristezza',  # sadness
             'neutrale',   # neutral
         ]
-        self.actors = [
-            'm1', 'm2', 'm3', # male
-            'f1', 'f2', 'f3', # female
-        ]
+        if training:
+            self.actors = [
+                'm1', 'm2', # male
+                'f1', 'f2', # female
+            ]
+        else:
+            self.actors = [
+                'm3', 'f3'
+            ]
         self.per_actor = 98
         self.sentence_types = [
             'b1', 'b2', 'b3',              # brevi - short
@@ -78,9 +83,6 @@ class EMOVO(Dataset):
         return self.per_actor * len(self.actors)
 
     def __getitem__(self, idx):
-        # if torch.is_tensor(idx):
-        #     idx = idx.tolist()
-
         actor_idx = idx // self.per_actor
         emotion_idx = idx % self.per_actor // len(self.sentence_types)
         sentence_type_idx = idx % self.per_actor % len(self.sentence_types)
@@ -95,10 +97,9 @@ class EMOVO(Dataset):
         waveform, _ = torchaudio.load(path)
         waveform = torch.mean(waveform, 0)  # to mono
         waveform = resample(waveform, self.sample_rate)
+        waveform.resize_(self.sample_rate * self.audio_length)  # cut or pad audio clip
 
-        if self.raw_data:
-            data = transforms1d(waveform, self.sample_rate, self.audio_length)
-        else:
-            data = transforms2d(waveform, self.sample_rate, self.n_fft, self.hop_length)
+        data = transforms2d(waveform, self.sample_rate, self.n_fft, self.hop_length)
+        data = torch.unsqueeze(data, 0)
 
         return (data, emotion_idx)

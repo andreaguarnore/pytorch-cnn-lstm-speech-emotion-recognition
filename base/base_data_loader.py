@@ -21,7 +21,7 @@ class BaseDataLoader(DataLoader):
             'dataset': dataset,
             'batch_size': batch_size,
             'shuffle': self.shuffle,
-            'collate_fn': collate_fn,
+            'collate_fn': collate_fn
         }
         super().__init__(sampler=self.sampler, **self.init_kwargs)
 

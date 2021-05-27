@@ -2,9 +2,9 @@ import argparse
 import torch
 from tqdm import tqdm
 import data_loaders.data_loaders as module_data
-import models.loss as module_loss
-import models.metric as module_metric
-import models.models as module_arch
+import model.loss as module_loss
+import model.metric as module_metric
+import model.model as module_arch
 from parse_config import ConfigParser
 
 
@@ -47,10 +47,6 @@ def main(config):
         for i, (data, target) in enumerate(tqdm(data_loader)):
             data, target = data.to(device), target.to(device)
             output = model(data)
-
-            #
-            # do something with output here
-            #
 
             # computing loss, metrics on test set
             loss = loss_fn(output, target)

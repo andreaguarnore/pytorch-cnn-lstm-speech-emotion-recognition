@@ -3,9 +3,9 @@ import collections
 import torch
 import numpy as np
 import data_loaders.data_loaders as module_data
-import models.loss as module_loss
-import models.metric as module_metric
-import models.models as module_arch
+import model.loss as module_loss
+import model.metric as module_metric
+import model.model as module_arch
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device

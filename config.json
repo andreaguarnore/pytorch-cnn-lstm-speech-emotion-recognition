@@ -1,17 +1,17 @@
 {
-    "name": "SpeechEmotion1D",
+    "name": "Emovo",
     "n_gpu": 1,
 
     "arch": {
-        "type": "Model1D",
+        "type": "SpeechEmotionModel",
         "args": {
             "emotions": 7
         }
     },
     "data_loader": {
         "type": "EMOVODataLoader",
-        "args": {
-            "data_dir": "data/EMOVO/",
+        "args":{
+            "data_dir": "data/emovo",
             "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.2
