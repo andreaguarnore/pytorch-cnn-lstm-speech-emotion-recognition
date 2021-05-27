@@ -1,58 +1,23 @@
+import os
+import numpy as np
 import torch
 import torchaudio
-from torchaudio.transforms import Resample, MelSpectrogram, AmplitudeToDB
 from torch.utils.data import Dataset
-import os
 
-
-def resample(waveform, sample_rate):
-    resampler = Resample(new_freq=sample_rate)
-    return resampler(waveform)
-
-def transforms2d(waveform, sample_rate, n_fft, hop_length):
-    # stft = Spectrogram(n_fft, hop_length=hop_length)(waveform)
-    # mel_spec = MelScale()(stft)
-    mel_spec = MelSpectrogram(
-        sample_rate=sample_rate,
-        n_fft=n_fft,
-        hop_length=hop_length,
-    )(waveform)
-    mel_spec = torch.nan_to_num(mel_spec, 1e-5)
-
-    log_mel_spec = AmplitudeToDB()(mel_spec)
-
-    return log_mel_spec
 
 class EMOVO(Dataset):
     """EMOVO: Italian emotional speech database
+
+    Args:
+        root_dir (string): Root directory of the dataset.
+        transforms (object, optional): Callable class with all transforms to be
+            performed. Default: None
+        training (boolean, optional): True for training set, False
+            for validation set. Default: True
     """
-    def __init__(self, root_dir, sample_rate=16000,
-        audio_length=8, n_fft=2048, hop_length=512, training=True):
-        """
-        Args:
-            root_dir (string): Root directory of the dataset.
-            raw_data (bool, optional): If true returns raw audio file,
-                otherwise the log-mel spectrogram will be extracted with
-                the parameters indicated in n_fft and hop_length.
-                Default: True
-            sample_rate (int, optional): Sample rate to which the signal
-                will be resampled. Default: 16000
-            audio_length (int, optional): Length in seconds of the audio
-                clip, if the clip is longer it will be cut to this
-                value, if it is shorter it will be padded with zeros.
-                Default: 8
-            n_fft (int, optional): Size of FFT for the spectrogram.
-                Default: 2048
-            hop_length (int, optional): Length of hop between STFT
-                windows. Default: 512
-            training (boolean, optional): True for training set, False
-                for validation set. Default: True
-        """
+    def __init__(self, root_dir, transforms, training=True):
         self.root_dir = root_dir
-        self.sample_rate = sample_rate
-        self.audio_length = audio_length
-        self.n_fft = n_fft
-        self.hop_length = hop_length
+        self.transforms = transforms
         self.emotions = [
             'disgusto',   # disgust
             'gioia',      # happiness
@@ -94,12 +59,12 @@ class EMOVO(Dataset):
                 self.sentence_types[sentence_type_idx]
             )
         )
-        waveform, _ = torchaudio.load(path)
-        waveform = torch.mean(waveform, 0)  # to mono
-        waveform = resample(waveform, self.sample_rate)
-        waveform.resize_(self.sample_rate * self.audio_length)  # cut or pad audio clip
+        data, _ = torchaudio.load(path)
+        data = torch.mean(data, 0)  # to mono
 
-        data = transforms2d(waveform, self.sample_rate, self.n_fft, self.hop_length)
+        if self.transforms is not None:
+            data = self.transforms(data)
+
         data = torch.unsqueeze(data, 0)
 
-        return (data, emotion_idx)
+        return (data, np.int64(emotion_idx))

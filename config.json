@@ -1,5 +1,5 @@
 {
-    "name": "Emovo",
+    "name": "EMOVO",
     "n_gpu": 1,
 
     "arch": {
@@ -8,10 +8,25 @@
             "emotions": 7
         }
     },
+    "transforms": {
+        "type": "LogMelSpectrogram",
+        "args": {
+            "sample_rate": 16000,
+            "audio_length": 8,
+            "n_fft": 2048,
+            "hop_length": 512
+        }
+    },
+    "dataset": {
+        "type": "EMOVO",
+        "args": {
+            "root_dir": "data/emovo",
+            "training": true
+        }
+    },
     "data_loader": {
         "type": "EMOVODataLoader",
-        "args":{
-            "data_dir": "data/emovo",
+        "args": {
             "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.2

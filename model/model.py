@@ -33,5 +33,5 @@ class SpeechEmotionModel(BaseModel):
         x = self.flatten2(x)
         x = self.fc(x)
 
-        return F.softmax(x, dim=1)
+        return F.log_softmax(x, dim=1)
 

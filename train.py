@@ -2,7 +2,9 @@ import argparse
 import collections
 import torch
 import numpy as np
-import data_loaders.data_loaders as module_data
+import datasets.transforms as module_transforms
+import datasets.datasets as module_data
+import data_loaders.data_loaders as module_data_loader
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
@@ -21,8 +23,12 @@ np.random.seed(SEED)
 def main(config):
     logger = config.get_logger('train')
 
+    # setup dataset
+    transforms = config.init_obj('transforms', module_transforms)
+    dataset = config.init_obj('dataset', module_data, transforms=transforms)
+
     # setup data_loader instances
-    data_loader = config.init_obj('data_loader', module_data)
+    data_loader = config.init_obj('data_loader', module_data_loader, dataset)
     valid_data_loader = data_loader.split_validation()
 
     # build model architecture, then print to console
