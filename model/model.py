@@ -17,9 +17,9 @@ class SpeechEmotionModel(BaseModel):
         self.bn4 = nn.BatchNorm2d(128)
 
         self.flatten1 = nn.Flatten(2)
-        self.lstm = nn.LSTM(128, 256, batch_first=True)
+        self.lstm = nn.LSTM(128, 32, batch_first=True)
         self.flatten2 = nn.Flatten(1)
-        self.fc = nn.Linear(256, emotions)
+        self.fc = nn.Linear(32, emotions)
 
     def forward(self, x):
         x = F.max_pool2d(F.elu(self.bn1(self.conv1(x))), kernel_size=2, stride=2)

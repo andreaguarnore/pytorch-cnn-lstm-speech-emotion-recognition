@@ -1,10 +1,10 @@
 import numpy as np
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader as TorchDataLoader
 from torch.utils.data.dataloader import default_collate
 from torch.utils.data.sampler import SubsetRandomSampler
 
 
-class BaseDataLoader(DataLoader):
+class DataLoader(TorchDataLoader):
     """
     Base class for all data loaders
     """
@@ -57,4 +57,4 @@ class BaseDataLoader(DataLoader):
         if self.valid_sampler is None:
             return None
         else:
-            return DataLoader(sampler=self.valid_sampler, **self.init_kwargs)
+            return TorchDataLoader(sampler=self.valid_sampler, **self.init_kwargs)

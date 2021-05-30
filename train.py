@@ -4,10 +4,10 @@ import torch
 import numpy as np
 import datasets.transforms as module_transforms
 import datasets.datasets as module_data
-import data_loaders.data_loaders as module_data_loader
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
+from data_loader import DataLoader
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
@@ -28,7 +28,7 @@ def main(config):
     dataset = config.init_obj('dataset', module_data, transforms=transforms)
 
     # setup data_loader instances
-    data_loader = config.init_obj('data_loader', module_data_loader, dataset)
+    data_loader = DataLoader(dataset=dataset, **config['data_loader'])
     valid_data_loader = data_loader.split_validation()
 
     # build model architecture, then print to console

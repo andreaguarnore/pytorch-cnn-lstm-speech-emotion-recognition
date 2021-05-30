@@ -35,7 +35,7 @@ class EMODB(Dataset):
             self.filenames = self.filenames[:delimiter]
         else:
             self.filenames = self.filenames[delimiter:]
-    
+
     def __len__(self):
         return len(self.filenames)
 

@@ -25,18 +25,15 @@
         }
     },
     "data_loader": {
-        "type": "EMOVODataLoader",
-        "args": {
-            "batch_size": 32,
-            "shuffle": true,
-            "validation_split": 0.2
-        }
+        "batch_size": 32,
+        "shuffle": true,
+        "validation_split": 0.2
     },
     "optimizer": {
         "type": "Adam",
         "args": {
-            "lr": 0.001,
-            "weight_decay": 0,
+            "lr": 0.0006,
+            "weight_decay": 1e-6,
             "amsgrad": true
         }
     },
