@@ -3,10 +3,10 @@ import torch
 from tqdm import tqdm
 import datasets.transforms as module_transforms
 import datasets.datasets as module_data
-import data_loaders.data_loaders as module_data_loader
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
+from data_loader import DataLoader
 from parse_config import ConfigParser
 
 
@@ -22,7 +22,7 @@ def main(config):
     )
 
     # setup data_loader instances
-    data_loader = getattr(module_data_loader, config['data_loader']['type'])(
+    data_loader = DataLoader(
         dataset=dataset,
         batch_size=32,
         shuffle=False,
