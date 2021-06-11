@@ -25,12 +25,9 @@
         }
     },
     "data_loader": {
-        "type": "EMOVODataLoader",
-        "args": {
-            "batch_size": 32,
-            "shuffle": true,
-            "validation_split": 0.2
-        }
+        "batch_size": 32,
+        "shuffle": true,
+        "validation_split": 0.2
     },
     "optimizer": {
         "type": "Adam",
@@ -59,7 +56,7 @@
         "verbosity": 2,
 
         "monitor": "min val_loss",
-        "early_stop": 10,
+        "early_stop": 0,
 
         "tensorboard": false
     }
