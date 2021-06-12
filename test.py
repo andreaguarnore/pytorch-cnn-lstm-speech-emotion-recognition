@@ -24,7 +24,7 @@ def main(config):
     # setup data_loader instances
     data_loader = DataLoader(
         dataset=dataset,
-        batch_size=32,
+        batch_size=16,
         shuffle=False,
         validation_split=0.0
     )

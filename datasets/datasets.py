@@ -82,12 +82,12 @@ class EMOVO(Dataset):
         ]
         if training:
             self.actors = [
-                'm1', 'm2', # male
+                'm1', 'm2', 'm3', # male
                 'f1', 'f2', # female
             ]
         else:
             self.actors = [
-                'm3', 'f3'
+                'f3'
             ]
         self.per_actor = 98
         self.sentence_types = [
