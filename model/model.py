@@ -31,7 +31,7 @@ class SpeechEmotionModel(BaseModel):
             nn.MaxPool2d(kernel_size=4, stride=4)
         )
 
-        self.flatten = nn.Flatten(2)
+        self.flatten = nn.Flatten(1, 2)
         self.lstm = nn.LSTM(128, 32, batch_first=True)
         self.fc = nn.Linear(32, emotions)
 
