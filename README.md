@@ -8,7 +8,6 @@ The network is similar to what Zhao et al. proposed in the paper [Speech emotion
   * [EMO-DB](#EMO-DB)
   * [EMOVO](#EMOVO)
 * [Usage](#usage)
-  * [Configuration](#configuration)
   * [Training](#training)
   * [Testing](#testing)
 * [Acknowledgements](#Acknowledgements)
@@ -28,8 +27,6 @@ The configuration files are, by default, set to have the datasets in the `data` 
 
 ## Usage
 The project structure is a rework of [victoresque](https://github.com/victoresque)'s PyTorch project template, so for more information check out his [repository](https://github.com/victoresque/pytorch-template).
-
-### Configuration
 
 ### Training
 A model can be trained by running `train.py` and passing the wanted configuration via the `--config` argument. E.g.:
